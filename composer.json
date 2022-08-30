@@ -15,19 +15,21 @@
         }
     ],
     "require": {
-        "php": "^7.1",
-        "symfony/framework-bundle": "^2.8 || ^3.3 || ^4.0",
-        "symfony/validator": "^2.8 || ^3.3 || ^4.0",
-        "knplabs/knp-menu-bundle": "^2.2.0",
-        "knplabs/knp-menu": "^2.0.0"
+        "php": "^7.1 || ^8.0",
+        "symfony/framework-bundle": "^2.8 || ^3.3 || ^4.0 || ^5.0",
+        "symfony/validator": "^2.8 || ^3.3 || ^4.0 || ^5.0",
+        "knplabs/knp-menu-bundle": "^3.1.0",
+        "knplabs/knp-menu": "^3.1.0"
     },
     "require-dev": {
+        "phpcompatibility/php-compatibility": "^9.3",
+        "jackalope/jackalope-fs": "^0.0.3",
+        "jackalope/jackalope": "^1.4.1",
         "symfony/monolog-bundle": "~3.1",
         "symfony/phpunit-bridge": "^3.3 || ^4.0",
         "symfony-cmf/routing-bundle": "^1.4 || ^2.0",
-        "symfony-cmf/testing": "^2.1.8",
         "twig/twig": "^1.35 || ^2.4.4",
-        "symfony-cmf/core-bundle": "^2.1",
+        "symfony-cmf/core-bundle": "^3.0",
         "doctrine/phpcr-odm": "^1.4.2 || ^2.0"
     },
     "suggest": {
@@ -47,7 +49,9 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "2.2-dev"
+            "dev-master": "3.0-dev"
         }
-    }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
 }

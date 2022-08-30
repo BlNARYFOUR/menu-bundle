@@ -92,7 +92,7 @@ class RequestContentIdentityVoter implements VoterInterface
     private function getRequest()
     {
         if ($this->requestStack) {
-            return $this->requestStack->getMasterRequest();
+            return $this->requestStack->getMainRequest();
         }
 
         return $this->request;
