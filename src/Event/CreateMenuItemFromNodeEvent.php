@@ -37,14 +37,14 @@ class CreateMenuItemFromNodeEvent extends Event
     private $item;
 
     /**
-     * Whether or not to skip processing of this node.
+     * Whether to skip processing of this node.
      *
      * @var bool
      */
     private $skipNode = false;
 
     /**
-     * Whether or not to skip processing of child nodes.
+     * Whether to skip processing of child nodes.
      *
      * @var bool
      */
@@ -63,7 +63,7 @@ class CreateMenuItemFromNodeEvent extends Event
      *
      * @return NodeInterface
      */
-    public function getNode()
+    public function getNode(): NodeInterface
     {
         return $this->node;
     }
@@ -76,7 +76,7 @@ class CreateMenuItemFromNodeEvent extends Event
      *
      * @return ItemInterface
      */
-    public function getItem()
+    public function getItem(): ItemInterface
     {
         return $this->item;
     }
@@ -88,7 +88,7 @@ class CreateMenuItemFromNodeEvent extends Event
      * will still be built and added after eventual children this menu item
      * has.
      *
-     * @param ItemInterface $item Menu item to use
+     * @param ItemInterface|null $item Menu item to use
      */
     public function setItem(ItemInterface $item = null)
     {
@@ -113,7 +113,7 @@ class CreateMenuItemFromNodeEvent extends Event
     /**
      * @return bool Whether the node associated to this event is to be skipped
      */
-    public function isSkipNode()
+    public function isSkipNode(): bool
     {
         return $this->skipNode;
     }
@@ -138,7 +138,7 @@ class CreateMenuItemFromNodeEvent extends Event
      * @return bool Whether the children of the node associated to this event
      *              should be handled or ignored
      */
-    public function isSkipChildren()
+    public function isSkipChildren(): bool
     {
         return $this->skipChildren;
     }

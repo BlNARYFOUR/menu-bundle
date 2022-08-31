@@ -11,7 +11,9 @@
 
 namespace Symfony\Cmf\Bundle\MenuBundle\Loader;
 
+use InvalidArgumentException;
 use Knp\Menu\FactoryInterface;
+use Knp\Menu\ItemInterface;
 use Knp\Menu\Loader\NodeLoader;
 use Knp\Menu\NodeInterface;
 use Symfony\Cmf\Bundle\MenuBundle\Doctrine\Phpcr\Menu;
@@ -36,20 +38,22 @@ class VotingNodeLoader extends NodeLoader
 
     public function __construct(FactoryInterface $factory, EventDispatcherInterface $dispatcher)
     {
+        parent::__construct($factory);
+
         $this->menuFactory = $factory;
         $this->dispatcher = $dispatcher;
     }
 
-    public function load($data)
+    public function load($data): ItemInterface
     {
         if (!$this->supports($data)) {
-            throw new \InvalidArgumentException(sprintf(
+            throw new InvalidArgumentException(sprintf(
                 'NodeLoader can only handle data implementing NodeInterface, "%s" given.',
                 is_object($data) ? get_class($data) : gettype($data)
             ));
         }
         $event = new CreateMenuItemFromNodeEvent($data);
-        $this->dispatcher->dispatch(Events::CREATE_ITEM_FROM_NODE, $event);
+        $this->dispatcher->dispatch($event, Events::CREATE_ITEM_FROM_NODE);
 
         if ($event->isSkipNode()) {
             if ($data instanceof Menu) {
@@ -57,13 +61,13 @@ class VotingNodeLoader extends NodeLoader
                 return $this->menuFactory->createItem('');
             }
 
-            return;
+            return $this->menuFactory->createItem('NULL');
         }
 
         $item = $event->getItem() ?: $this->menuFactory->createItem($data->getName(), $data->getOptions());
 
-        if (empty($item)) {
-            return;
+        if (empty($item) || $item->getName() === 'NULL') {
+            return $this->menuFactory->createItem('NULL');
         }
 
         if ($event->isSkipChildren()) {
@@ -73,7 +77,7 @@ class VotingNodeLoader extends NodeLoader
         foreach ($data->getChildren() as $childNode) {
             if ($childNode instanceof NodeInterface) {
                 $child = $this->load($childNode);
-                if (!empty($child)) {
+                if (!empty($child) && $child->getName() !== 'NULL') {
                     $item->addChild($child);
                 }
             }

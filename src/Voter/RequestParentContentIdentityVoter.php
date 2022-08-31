@@ -56,7 +56,7 @@ class RequestParentContentIdentityVoter implements VoterInterface
      *                                        attempt calling getParentDocument on it
      * @param RequestStack|null $requestStack
      */
-    public function __construct($requestKey, $childClass, RequestStack $requestStack = null)
+    public function __construct(string $requestKey, string $childClass, RequestStack $requestStack = null)
     {
         $this->requestKey = $requestKey;
         $this->childClass = $childClass;
@@ -83,11 +83,11 @@ class RequestParentContentIdentityVoter implements VoterInterface
     /**
      * {@inheritdoc}
      */
-    public function matchItem(ItemInterface $item)
+    public function matchItem(ItemInterface $item): ?bool
     {
         $request = $this->getRequest();
         if (!$request) {
-            return;
+            return null;
         }
 
         $content = $item->getExtra('content');
@@ -99,9 +99,11 @@ class RequestParentContentIdentityVoter implements VoterInterface
         ) {
             return true;
         }
+
+        return null;
     }
 
-    private function getRequest()
+    private function getRequest(): ?Request
     {
         if ($this->requestStack) {
             return $this->requestStack->getMainRequest();

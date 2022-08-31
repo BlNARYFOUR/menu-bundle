@@ -46,7 +46,7 @@ class RequestContentIdentityVoter implements VoterInterface
      * @param string $requestKey The key to look up the content in the request
      *                           attributes
      */
-    public function __construct($requestKey, RequestStack $requestStack = null)
+    public function __construct(string $requestKey, RequestStack $requestStack = null)
     {
         $this->requestKey = $requestKey;
         $this->requestStack = $requestStack;
@@ -72,11 +72,11 @@ class RequestContentIdentityVoter implements VoterInterface
     /**
      * {@inheritdoc}
      */
-    public function matchItem(ItemInterface $item)
+    public function matchItem(ItemInterface $item): ?bool
     {
         $request = $this->getRequest();
         if (!$request) {
-            return;
+            return null;
         }
 
         $content = $item->getExtra('content');
@@ -87,9 +87,11 @@ class RequestContentIdentityVoter implements VoterInterface
         ) {
             return true;
         }
+
+        return null;
     }
 
-    private function getRequest()
+    private function getRequest(): ?Request
     {
         if ($this->requestStack) {
             return $this->requestStack->getMainRequest();

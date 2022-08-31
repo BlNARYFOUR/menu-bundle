@@ -11,6 +11,7 @@
 
 namespace Symfony\Cmf\Bundle\MenuBundle\Model;
 
+use DateTime;
 use Symfony\Cmf\Bundle\CoreBundle\Model\ChildInterface;
 use Symfony\Cmf\Bundle\CoreBundle\PublishWorkflow\PublishableInterface;
 use Symfony\Cmf\Bundle\CoreBundle\PublishWorkflow\PublishTimePeriodInterface;
@@ -69,19 +70,19 @@ class MenuNode extends MenuNodeBase implements
     protected $publishable = true;
 
     /**
-     * @var \DateTime
+     * @var DateTime
      */
     protected $publishStartDate;
 
     /**
-     * @var \DateTime
+     * @var DateTime
      */
     protected $publishEndDate;
 
     /**
      * {@inheritdoc}
      */
-    public function setParentObject($parent)
+    public function setParentObject($parent): MenuNode
     {
         $this->parent = $parent;
 
@@ -99,7 +100,7 @@ class MenuNode extends MenuNodeBase implements
     /**
      * @return string the loaded locale of this menu node
      */
-    public function getLocale()
+    public function getLocale(): string
     {
         return $this->locale;
     }
@@ -135,7 +136,7 @@ class MenuNode extends MenuNodeBase implements
      *
      * @return MenuNode - this instance
      */
-    public function setContent($content)
+    public function setContent($content): MenuNode
     {
         $this->content = $content;
 
@@ -145,7 +146,7 @@ class MenuNode extends MenuNodeBase implements
     /**
      * {@inheritdoc}
      */
-    public function getOptions()
+    public function getOptions(): array
     {
         $options = parent::getOptions();
 
@@ -158,7 +159,7 @@ class MenuNode extends MenuNodeBase implements
     /**
      * {@inheritdoc}
      */
-    public function isPublishable()
+    public function isPublishable(): bool
     {
         return $this->publishable;
     }
@@ -176,7 +177,7 @@ class MenuNode extends MenuNodeBase implements
     /**
      * {@inheritdoc}
      */
-    public function getPublishStartDate()
+    public function getPublishStartDate(): ?DateTime
     {
         return $this->publishStartDate;
     }
@@ -184,15 +185,15 @@ class MenuNode extends MenuNodeBase implements
     /**
      * {@inheritdoc}
      */
-    public function setPublishStartDate(\DateTime $date = null)
+    public function setPublishStartDate(DateTime $publishDate = null)
     {
-        $this->publishStartDate = $date;
+        $this->publishStartDate = $publishDate;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getPublishEndDate()
+    public function getPublishEndDate(): ?DateTime
     {
         return $this->publishEndDate;
     }
@@ -200,9 +201,9 @@ class MenuNode extends MenuNodeBase implements
     /**
      * {@inheritdoc}
      */
-    public function setPublishEndDate(\DateTime $date = null)
+    public function setPublishEndDate(DateTime $publishDate = null)
     {
-        $this->publishEndDate = $date;
+        $this->publishEndDate = $publishDate;
     }
 
     /**
@@ -215,7 +216,7 @@ class MenuNode extends MenuNodeBase implements
      *
      * @return string
      */
-    public function getLinkType()
+    public function getLinkType(): string
     {
         return $this->linkType;
     }
@@ -228,7 +229,7 @@ class MenuNode extends MenuNodeBase implements
      *
      * @param $linkType string - one of uri, route or content
      */
-    public function setLinkType($linkType)
+    public function setLinkType(string $linkType)
     {
         $this->linkType = $linkType;
     }

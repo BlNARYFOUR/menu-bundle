@@ -18,11 +18,11 @@ use Symfony\Component\Config\Definition\ConfigurationInterface;
 
 class Configuration implements ConfigurationInterface
 {
-    public function getConfigTreeBuilder()
+    public function getConfigTreeBuilder(): TreeBuilder
     {
-        $treeBuilder = new TreeBuilder();
+        $treeBuilder = new TreeBuilder('cmf_menu');
 
-        $treeBuilder->root('cmf_menu')
+        $treeBuilder->getRootNode()
             ->fixXmlConfig('voter')
             ->children()
                 ->arrayNode('persistence')

@@ -26,8 +26,8 @@ class MenuContentVoter implements VoterInterface
     protected $container;
 
     /**
-     * @param ContainerInterface $container to get the publish workflow checker
-     *                                      from. We cannot inject the publish workflow checker directly as
+     * @param ContainerInterface $container to get the publishing workflow checker
+     *                                      from. We cannot inject the publishing workflow checker directly as
      *                                      this would lead to a circular reference
      */
     public function __construct(ContainerInterface $container)
@@ -35,20 +35,14 @@ class MenuContentVoter implements VoterInterface
         $this->container = $container;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function supportsAttribute($attribute)
+    public function supportsAttribute($attribute): bool
     {
         return PublishWorkflowChecker::VIEW_ATTRIBUTE === $attribute
             || PublishWorkflowChecker::VIEW_ANONYMOUS_ATTRIBUTE === $attribute
         ;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function supportsClass($class)
+    public function supportsClass($class): bool
     {
         return is_subclass_of($class, MenuNode::class);
     }
@@ -58,9 +52,9 @@ class MenuContentVoter implements VoterInterface
      *
      * @param MenuNode $object
      */
-    public function vote(TokenInterface $token, $object, array $attributes)
+    public function vote(TokenInterface $token, $subject, array $attributes): int
     {
-        if (!$this->supportsClass(get_class($object))) {
+        if (!$this->supportsClass(get_class($subject))) {
             return self::ACCESS_ABSTAIN;
         }
         /** @var PublishWorkflowChecker $publishWorkflowChecker */

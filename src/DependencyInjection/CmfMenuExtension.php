@@ -11,6 +11,8 @@
 
 namespace Symfony\Cmf\Bundle\MenuBundle\DependencyInjection;
 
+use Exception;
+use RuntimeException;
 use Symfony\Cmf\Bundle\RoutingBundle\Routing\DynamicRouter;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -19,6 +21,9 @@ use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 
 class CmfMenuExtension extends Extension
 {
+    /**
+     * @throws Exception
+     */
     public function load(array $configs, ContainerBuilder $container)
     {
         $config = $this->processConfiguration(new Configuration(), $configs);
@@ -46,6 +51,9 @@ class CmfMenuExtension extends Extension
         }
     }
 
+    /**
+     * @throws Exception
+     */
     public function loadVoters($config, XmlFileLoader $loader, ContainerBuilder $container)
     {
         $loader->load('voters.xml');
@@ -53,7 +61,7 @@ class CmfMenuExtension extends Extension
         if (isset($config['voters']['content_identity'])) {
             if (empty($config['voters']['content_identity']['content_key'])) {
                 if (!class_exists(DynamicRouter::class)) {
-                    throw new \RuntimeException('You need to set the content_key when not using the CmfRoutingBundle DynamicRouter');
+                    throw new RuntimeException('You need to set the content_key when not using the CmfRoutingBundle DynamicRouter');
                 }
                 $contentKey = DynamicRouter::CONTENT_KEY;
             } else {
@@ -69,6 +77,9 @@ class CmfMenuExtension extends Extension
         }
     }
 
+    /**
+     * @throws Exception
+     */
     public function loadPhpcr($config, XmlFileLoader $loader, ContainerBuilder $container)
     {
         $keys = [
@@ -95,12 +106,12 @@ class CmfMenuExtension extends Extension
      *
      * @return string The XSD base path
      */
-    public function getXsdValidationBasePath()
+    public function getXsdValidationBasePath(): string
     {
         return __DIR__.'/../Resources/config/schema';
     }
 
-    public function getNamespace()
+    public function getNamespace(): string
     {
         return 'http://cmf.symfony.com/schema/dic/menu';
     }

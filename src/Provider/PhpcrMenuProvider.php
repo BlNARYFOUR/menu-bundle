@@ -11,8 +11,9 @@
 
 namespace Symfony\Cmf\Bundle\MenuBundle\Provider;
 
-use Doctrine\Common\Persistence\ManagerRegistry;
-use Doctrine\ODM\PHPCR\DocumentManager;
+use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\Persistence\ObjectManager;
+use InvalidArgumentException;
 use Jackalope\Session;
 use Knp\Menu\ItemInterface;
 use Knp\Menu\Loader\NodeLoader;
@@ -60,12 +61,12 @@ class PhpcrMenuProvider implements MenuProviderInterface
      * @param NodeLoader      $loader          Factory for the menu items
      * @param ManagerRegistry $managerRegistry manager registry service to use in conjunction
      *                                         with the manager name to load the load menu root document
-     * @param string          $menuRoot        root id of the menu
+     * @param string $menuRoot        root id of the menu
      */
     public function __construct(
         NodeLoader $loader,
         ManagerRegistry $managerRegistry,
-        $menuRoot
+        string $menuRoot
     ) {
         $this->loader = $loader;
         $this->managerRegistry = $managerRegistry;
@@ -78,7 +79,7 @@ class PhpcrMenuProvider implements MenuProviderInterface
      *
      * @param string|null $managerName
      */
-    public function setManagerName($managerName)
+    public function setManagerName(?string $managerName)
     {
         $this->managerName = $managerName;
     }
@@ -86,7 +87,7 @@ class PhpcrMenuProvider implements MenuProviderInterface
     /**
      * @param string $menuRoot
      */
-    public function setMenuRoot($menuRoot)
+    public function setMenuRoot(string $menuRoot)
     {
         $this->menuRoot = $menuRoot;
     }
@@ -94,7 +95,7 @@ class PhpcrMenuProvider implements MenuProviderInterface
     /**
      * @return string
      */
-    public function getMenuRoot()
+    public function getMenuRoot(): string
     {
         return $this->menuRoot;
     }
@@ -120,7 +121,7 @@ class PhpcrMenuProvider implements MenuProviderInterface
      *
      * @return int The depth to use when fetching menus
      */
-    public function getPrefetch()
+    public function getPrefetch(): int
     {
         return $this->prefetch;
     }
@@ -138,15 +139,15 @@ class PhpcrMenuProvider implements MenuProviderInterface
      *
      * @return ItemInterface The menu (sub)tree starting with name
      *
-     * @throws \InvalidArgumentException if the menu can not be found
+     * @throws InvalidArgumentException if the menu can not be found
      */
-    public function get($name, array $options = [])
+    public function get(string $name, array $options = []): ItemInterface
     {
         $menu = $this->find($name, true);
 
         $menuItem = $this->loader->load($menu);
-        if (!$menuItem) {
-            throw new \InvalidArgumentException("Menu at '$name' is misconfigured (f.e. the route might be incorrect) and could therefore not be instanciated");
+        if ($menuItem->getName() === 'NULL') {
+            throw new InvalidArgumentException("Menu at '$name' is misconfigured (f.e. the route might be incorrect) and could therefore not be instanciated");
         }
 
         return $menuItem;
@@ -164,28 +165,28 @@ class PhpcrMenuProvider implements MenuProviderInterface
      *
      * @return bool Whether a menu with this name can be loaded by this provider
      */
-    public function has($name, array $options = [])
+    public function has(string $name, array $options = []): bool
     {
         return $this->find($name, false) instanceof NodeInterface;
     }
 
     /**
      * @param string $name  Name of the menu to load
-     * @param bool   $throw Whether to throw an exception if the menu is not
+     * @param bool $throw Whether to throw an exception if the menu is not
      *                      found or no valid menu. Returns false if $throw is
      *                      false and there is no menu at $name
      *
      * @return object|bool The menu root found with $name or false if $throw
      *                     is false and the menu was not found
      *
-     * @throws \InvalidArgumentException Only if $throw is true throws this
+     * @throws InvalidArgumentException Only if $throw is true throws this
      *                                   exception if the name is empty or no menu found
      */
-    private function find($name, $throw)
+    private function find(string $name, bool $throw)
     {
         if (!$name) {
             if ($throw) {
-                throw new \InvalidArgumentException('The menu name may not be empty');
+                throw new InvalidArgumentException('The menu name may not be empty');
             }
 
             return false;
@@ -216,7 +217,7 @@ class PhpcrMenuProvider implements MenuProviderInterface
                     $session->getNode($this->getMenuRoot(), $this->getPrefetch() + 1);
                 } catch (PathNotFoundException $e) {
                     if ($throw) {
-                        throw new \InvalidArgumentException(sprintf(
+                        throw new InvalidArgumentException(sprintf(
                             'The menu root "%s" does not exist.',
                             $this->getMenuRoot()
                         ));
@@ -229,7 +230,7 @@ class PhpcrMenuProvider implements MenuProviderInterface
                     $session->getNode($path, $this->getPrefetch());
                 } catch (PathNotFoundException $e) {
                     if ($throw) {
-                        throw new \InvalidArgumentException(sprintf('No menu found at "%s".', $path));
+                        throw new InvalidArgumentException(sprintf('No menu found at "%s".', $path));
                     }
 
                     return false;
@@ -240,14 +241,14 @@ class PhpcrMenuProvider implements MenuProviderInterface
         $menu = $dm->find(null, $path);
         if (null === $menu) {
             if ($throw) {
-                throw new \InvalidArgumentException(sprintf('The menu "%s" is not defined.', $name));
+                throw new InvalidArgumentException(sprintf('The menu "%s" is not defined.', $name));
             }
 
             return false;
         }
         if (!$menu instanceof NodeInterface) {
             if ($throw) {
-                throw new \InvalidArgumentException("Menu at '$name' is not a valid menu node");
+                throw new InvalidArgumentException("Menu at '$name' is not a valid menu node");
             }
 
             return false;
@@ -259,9 +260,9 @@ class PhpcrMenuProvider implements MenuProviderInterface
     /**
      * Get the object manager named $managerName from the registry.
      *
-     * @return DocumentManager
+     * @return ObjectManager
      */
-    protected function getObjectManager()
+    protected function getObjectManager(): ObjectManager
     {
         return $this->managerRegistry->getManager($this->managerName);
     }

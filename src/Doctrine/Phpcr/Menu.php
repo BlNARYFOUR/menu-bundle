@@ -24,7 +24,7 @@ class Menu extends ModelMenu implements HierarchyInterface
      *
      * @return Menu - this instance
      */
-    public function setParentDocument($parent)
+    public function setParentDocument($parent): Menu
     {
         return $this->setParentObject($parent);
     }
@@ -43,7 +43,7 @@ class Menu extends ModelMenu implements HierarchyInterface
      * @deprecated For BC with the PHPCR-ODM 1.4 HierarchyInterface
      * @see setParentDocument
      */
-    public function setParent($parent)
+    public function setParent($parent): Menu
     {
         @trigger_error('The '.__METHOD__.'() method is deprecated and will be removed in version 3.0. Use setParentDocument() instead.', E_USER_DEPRECATED);
 
@@ -69,7 +69,7 @@ class Menu extends ModelMenu implements HierarchyInterface
      *
      * @return Menu - this instance
      */
-    public function setPosition($parent, $name)
+    public function setPosition($parent, string $name): Menu
     {
         $this->setParentObject($parent);
         $this->setName($name);
@@ -84,7 +84,7 @@ class Menu extends ModelMenu implements HierarchyInterface
      *
      * @return NodeInterface - The newly added child node
      */
-    public function addChild(NodeInterface $child)
+    public function addChild(NodeInterface $child): NodeInterface
     {
         if ($child instanceof MenuNode) {
             $child->setParentObject($this);

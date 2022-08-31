@@ -24,7 +24,7 @@ interface MenuNodeReferrersInterface
      *
      * @return NodeInterface[] Menu nodes that point to this content
      */
-    public function getMenuNodes();
+    public function getMenuNodes(): array;
 
     /**
      * Add a menu node for this content.

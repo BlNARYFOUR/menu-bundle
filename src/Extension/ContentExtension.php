@@ -11,6 +11,7 @@
 
 namespace Symfony\Cmf\Bundle\MenuBundle\Extension;
 
+use InvalidArgumentException;
 use Knp\Menu\Factory\ExtensionInterface;
 use Knp\Menu\ItemInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -45,7 +46,7 @@ class ContentExtension implements ExtensionInterface
      *
      * @return array
      */
-    public function buildOptions(array $options)
+    public function buildOptions(array $options): array
     {
         $options = array_merge([
             'content' => null,
@@ -61,12 +62,12 @@ class ContentExtension implements ExtensionInterface
 
         if ('content' === $options['linkType']) {
             if (!isset($options['content'])) {
-                throw new \InvalidArgumentException(sprintf('Link type content configured, but could not find content option in the provided options: %s', implode(', ', array_keys($options))));
+                throw new InvalidArgumentException(sprintf('Link type content configured, but could not find content option in the provided options: %s', implode(', ', array_keys($options))));
             }
 
             $options['uri'] = $this->contentRouter->generate(
                 $options['content'],
-                isset($options['routeParameters']) ? $options['routeParameters'] : [],
+                $options['routeParameters'] ?? [],
                 (isset($options['routeAbsolute']) && $options['routeAbsolute']) ? UrlGeneratorInterface::ABSOLUTE_URL : UrlGeneratorInterface::ABSOLUTE_PATH
             );
         }
@@ -86,7 +87,7 @@ class ContentExtension implements ExtensionInterface
      * @param ItemInterface $item
      * @param array         $options
      */
-    public function buildItem(ItemInterface $item, array $options)
+    public function buildItem(ItemInterface $item, array $options): void
     {
     }
 
@@ -97,7 +98,7 @@ class ContentExtension implements ExtensionInterface
      *
      * @return string The type of link to use
      */
-    private function determineLinkType(array $options)
+    private function determineLinkType(array $options): string
     {
         if (!empty($options['uri'])) {
             return 'uri';
@@ -119,14 +120,14 @@ class ContentExtension implements ExtensionInterface
      *
      * @param string $linkType
      *
-     * @throws \InvalidArgumentException if $linkType is not one of the known
+     * @throws InvalidArgumentException if $linkType is not one of the known
      *                                   link types
      */
-    private function validateLinkType($linkType)
+    private function validateLinkType(string $linkType)
     {
         $linkTypes = ['uri', 'route', 'content'];
         if (!in_array($linkType, $linkTypes)) {
-            throw new \InvalidArgumentException(sprintf(
+            throw new InvalidArgumentException(sprintf(
                 'Invalid link type "%s", expected: "%s"',
                 $linkType,
                 implode(',', $linkTypes)
