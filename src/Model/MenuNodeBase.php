@@ -14,6 +14,7 @@ namespace Symfony\Cmf\Bundle\MenuBundle\Model;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Knp\Menu\NodeInterface;
+use Traversable;
 
 /**
  * This is a persistable implementation of the KnpMenu
@@ -172,7 +173,7 @@ class MenuNodeBase implements NodeInterface
     /**
      * {@inheritdoc}
      */
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }
@@ -349,7 +350,7 @@ class MenuNodeBase implements NodeInterface
      *
      * @return NodeInterface[]
      */
-    public function getChildren()
+    public function getChildren(): Traversable
     {
         $children = [];
         foreach ($this->children as $child) {
@@ -573,7 +574,7 @@ class MenuNodeBase implements NodeInterface
     /**
      * {@inheritdoc}
      */
-    public function getOptions()
+    public function getOptions(): array
     {
         return [
             'uri' => $this->getUri(),
